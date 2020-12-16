@@ -1,24 +1,9 @@
-# mc-colorpicker
+# vue-colorpicker
 
-## Project setup
-```
-npm install
-```
+A simple colorpicker component for vue. Easy to implement, easy to use.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+# Demo and documentation [here](https://mikk3lro.github.io/vue-colorpicker/)
 
-### Compiles and minifies for production
-```
-npm run build
-```
+# Installing
+`npm install @mikk3lro/mc-colorpicker --save`
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
