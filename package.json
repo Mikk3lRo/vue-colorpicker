@@ -12,7 +12,7 @@
   "main": "./dist/mc-colorpicker.common.js",
   "scripts": {
     "serve": "vue-cli-service serve --open",
-    "build": "vue-cli-service build --dest ./demo",
+    "build": "vue-cli-service build --dest ./docs",
     "lint": "vue-cli-service lint",
     "build-bundle": "vue-cli-service build --dest ./dist --target lib --name mc-colorpicker ./src/components/index.js && rm ./dist/demo.html"
   },
