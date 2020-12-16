@@ -8,7 +8,15 @@
     "vue"
   ],
   "homepage": "https://github.com/Mikk3lRo/vue-colorpicker#readme",
-  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mikk3lRo/vue-colorpicker.git"
+  },
+  "author": {
+    "name": "Mikk3lRo",
+    "email": "mikk3lro@gmail.com"
+  },
+  "license": "MIT",
   "main": "./dist/mc-colorpicker.common.js",
   "scripts": {
     "serve": "vue-cli-service serve --open",
