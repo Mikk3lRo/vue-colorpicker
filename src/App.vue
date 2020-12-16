@@ -1,5 +1,14 @@
 <template>
   <div id="app">
+    <h1>Simple color picker</h1>
+    <p>
+      This is a live demo showing how to use
+      <a href="https://github.com/Mikk3lRo/vue-colorpicker#readme"
+        >@mikk3lro/mc-colorpicker</a
+      >
+      colorpicker for Vue.js.
+    </p>
+
     <h3>Default</h3>
     <div class="example">
       <McColorpicker />
