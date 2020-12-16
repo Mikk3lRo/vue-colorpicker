@@ -1,9 +1,25 @@
 # vue-colorpicker
 
-A simple colorpicker component for vue. Easy to implement, easy to use.
+A simple colorpicker component for Vue.js. Easy to implement, easy to use.
 
-# Demo and documentation [here](https://mikk3lro.github.io/vue-colorpicker/)
+# Documentation
+Documentation and live demo is available at:
+https://mikk3lro.github.io/vue-colorpicker/
 
 # Installing
-`npm install @mikk3lro/mc-colorpicker --save`
 
+```bash
+# yarn  
+yarn add @mikk3lro/mc-colorpicker
+# npm
+npm i @mikk3lro/mc-colorpicker
+```
+
+Then, import and register the component and stylesheet:
+
+```js
+import McColorpicker from '@mikk3lro/mc-colorpicker'
+import '@mikk3lro/mc-colorpicker/dist/mc-colorpicker.css'
+
+Vue.component("McColorpicker", McColorpicker);
+```
