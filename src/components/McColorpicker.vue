@@ -498,6 +498,11 @@ export default {
       if (this.drag.which) {
         this.drag.which = false
       } else if (
+        this.$refs['activator'] ||
+        this.$refs['activator'].contains(e.target)
+      ) {
+        //We handle this elsewhere
+      } else if (
         !this.$refs['popout'] ||
         !this.$refs['popout'].contains(e.target)
       ) {
