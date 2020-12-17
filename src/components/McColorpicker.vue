@@ -498,7 +498,7 @@ export default {
       if (this.drag.which) {
         this.drag.which = false
       } else if (
-        this.$refs['activator'] ||
+        this.$refs['activator'] &&
         this.$refs['activator'].contains(e.target)
       ) {
         //We handle this elsewhere
