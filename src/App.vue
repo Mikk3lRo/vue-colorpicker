@@ -268,6 +268,9 @@ Pick a color:
       automatically hide the popout.
     </p>
     <p>
+      It will also auto-hide the popout on window scroll or resize.
+    </p>
+    <p>
       You can disable this behaviour with the boolean prop
       <code>no-auto-hide</code>:
     </p>
