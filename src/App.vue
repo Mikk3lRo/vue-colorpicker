@@ -259,7 +259,7 @@
     <pre>
 Pick a color:
 &lt;McColorpicker v-model="colors.hex3" pop="under">
-  &#123;&#123; colors.hex3 }}
+  <span>{</span>{ colors.hex3 }}
 &lt;/McColorpicker></pre
     >
     <hr />
