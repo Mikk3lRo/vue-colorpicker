@@ -142,12 +142,13 @@ export default {
     this.init()
     this.parseColor()
     this.addListeners()
+    this.calculatePosition()
   },
   beforeDestroy() {
     this.removeListeners()
   },
   methods: {
-    show() {
+    calculatePosition() {
       let pop = {
         w: this.$refs['popout'].clientWidth,
         h: this.$refs['popout'].clientHeight,
@@ -181,7 +182,9 @@ export default {
       }
 
       this.$refs['popout'].style.transformOrigin = to.x + 'px ' + to.y + 'px'
-
+    },
+    show() {
+      this.calculatePosition()
       this.shown = true
     },
     hide() {
