@@ -20,9 +20,9 @@
   "main": "./dist/mc-colorpicker.common.js",
   "scripts": {
     "serve": "vue-cli-service serve --open",
-    "build": "vue-cli-service build --dest ./docs",
+    "build": "vue-cli-service build --dest ./docs && vue-cli-service build --dest ./dist --target lib --name mc-colorpicker ./src/components/index.js && rm ./dist/demo.html",
     "lint": "vue-cli-service lint",
-    "build-bundle": "vue-cli-service build --dest ./dist --target lib --name mc-colorpicker ./src/components/index.js && rm ./dist/demo.html"
+    "deploy": "npm publish --access public"
   },
   "files": [
     "dist/*",
