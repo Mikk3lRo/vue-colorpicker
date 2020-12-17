@@ -233,29 +233,35 @@ export default {
     },
 
     addListeners() {
-      this.$refs['color-block'].addEventListener(
-        'mousedown',
-        this.mousedownColor,
-        false,
-      )
-      this.$refs['hue-slider'].addEventListener(
-        'mousedown',
-        this.mousedownHue,
-        false,
-      )
-      this.$refs['opacity-slider'].addEventListener(
-        'mousedown',
-        this.mousedownOpacity,
-        false,
-      )
+      for (var evt of ['touchstart', 'mousedown']) {
+        this.$refs['color-block'].addEventListener(
+          evt,
+          this.mousedownColor,
+          false,
+        )
+        this.$refs['hue-slider'].addEventListener(
+          evt, //
+          this.mousedownHue,
+          false,
+        )
+        this.$refs['opacity-slider'].addEventListener(
+          evt,
+          this.mousedownOpacity,
+          false,
+        )
+      }
 
       document.addEventListener('mouseup', this.mouseup, false)
       document.addEventListener('mousemove', this.mousemove, false)
+      document.addEventListener('touchend', this.mouseup, false)
+      document.addEventListener('touchmove', this.mousemove, false)
     },
 
     removeListeners() {
       document.removeEventListener('mouseup', this.mouseup, false)
       document.removeEventListener('mousemove', this.mousemove, false)
+      document.removeEventListener('touchend', this.mouseup, false)
+      document.removeEventListener('touchmove', this.mousemove, false)
     },
 
     fillHue() {
@@ -347,6 +353,9 @@ export default {
     },
 
     mousemove(e) {
+      if (this.drag.which) {
+        e.preventDefault()
+      }
       if (this.drag.which == 'hue') {
         let rel = this.getDragPosition(e)
         this.changeHue(rel)
@@ -374,13 +383,22 @@ export default {
     },
 
     startDrag(e, which) {
+      if (['touchstart', 'touchmove', 'touchend'].includes(e.type)) {
+        e.preventDefault()
+        var rect = e.target.getBoundingClientRect()
+        this.drag.elmStart = {
+          x: event.touches[0].clientX - rect.left,
+          y: event.touches[0].clientY - rect.top,
+        }
+      } else {
+        this.drag.elmStart = {
+          x: e.offsetX,
+          y: e.offsetY,
+        }
+      }
       this.drag.start = {
         x: e.pageX,
         y: e.pageY,
-      }
-      this.drag.elmStart = {
-        x: e.offsetX,
-        y: e.offsetY,
       }
       this.drag.max = this.dimensions[which]
       this.drag.which = which
@@ -474,6 +492,7 @@ export default {
 .mccolorpicker {
   position: relative;
   display: inline-block;
+  user-select: none;
 }
 .mccolorpicker * {
   vertical-align: middle;
