@@ -1,5 +1,5 @@
 <template>
-  <div ref="outer" :class="outerClasses">
+  <div :class="outerClasses">
     <span
       ref="activator"
       class="mccolorpicker__activator"
@@ -9,7 +9,7 @@
         <span class="mccolorpicker__preview" :style="previewStyle" />
       </slot>
     </span>
-    <div ref="popout" class="mccolorpicker__popout">
+    <div ref="popout" :class="popoutClasses">
       <div ref="arrow" class="mccolorpicker__arrow"></div>
       <div class="mccolorpicker__dragarea mccolorpicker__hue">
         <span :style="stripMarkerStyle" class="mccolorpicker__ymarker"></span>
@@ -59,6 +59,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    breakout: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -89,6 +93,8 @@ export default {
       preventEmit: false,
 
       colorObj: Color(this.color),
+
+      brokenout: false,
     }
   },
   watch: {
@@ -100,6 +106,9 @@ export default {
       this.parseColor()
       this.preventEmit = false
     },
+    breakout(newBreakout) {
+      this.breakoutOrComeHome()
+    },
   },
   computed: {
     outerClasses() {
@@ -110,6 +119,10 @@ export default {
           ? 'mccolorpicker__with_opacity'
           : 'mccolorpicker__without_opacity',
       ]
+      return ret
+    },
+    popoutClasses() {
+      let ret = ['mccolorpicker__popout']
       if (this.shown) {
         ret.push('mccolorpicker__active')
       }
@@ -137,48 +150,148 @@ export default {
         backgroundColor: colorStr,
       }
     },
+    positionX() {
+      return ['under', 'over'].includes(this.pop)
+        ? 'center'
+        : ['under-left', 'over-left'].includes(this.pop)
+        ? 'left'
+        : 'right'
+    },
+    positionY() {
+      return ['under', 'under-left', 'under-right'].includes(this.pop)
+        ? 'under'
+        : 'over'
+    },
   },
   mounted() {
     this.init()
     this.parseColor()
     this.addListeners()
     this.calculatePosition()
+    this.breakoutOrComeHome()
   },
   beforeDestroy() {
     this.removeListeners()
+    if (this.brokenout) {
+      document.body.removeChild(this.$refs['popout'])
+    }
   },
   methods: {
+    breakoutOrComeHome() {
+      if (this.breakout) {
+        document.body.append(this.$refs['popout'])
+        this.brokenout = true
+      } else {
+        this.$el.append(this.$refs['popout'])
+        this.brokenout = false
+      }
+    },
     calculatePosition() {
-      let pop = {
-        w: this.$refs['popout'].clientWidth,
-        h: this.$refs['popout'].clientHeight,
+      let popRect = {
+        width: this.$refs['popout'].offsetWidth,
+        height: this.$refs['popout'].offsetHeight,
       }
-      let act = {
-        w: this.$refs['activator'].clientWidth,
-        h: this.$refs['activator'].clientHeight,
+      let actRect = this.$refs['activator'].getBoundingClientRect()
+
+      let popPos = {}
+
+      let yUnder =
+        actRect.top + actRect.height + document.documentElement.scrollTop + 7
+      let yOver =
+        actRect.top - popRect.height + document.documentElement.scrollTop - 7
+      let screenTop = document.documentElement.scrollTop
+      let screenBottom =
+        document.documentElement.clientHeight +
+        document.documentElement.scrollTop
+
+      let actualPositionY = this.positionY
+
+      if (this.positionY == 'under') {
+        if (yUnder + popRect.height > screenBottom && yOver > screenTop) {
+          actualPositionY = 'over'
+        }
+      } else {
+        if (yOver < screenTop && yUnder + popRect.height < screenBottom) {
+          actualPositionY = 'under'
+        }
       }
-      if (this.pop == 'under-left' || this.pop == 'over-left') {
-        this.$refs['arrow'].style.left = pop.w - act.w / 2 + 'px'
-      } else if (this.pop == 'under' || this.pop == 'over') {
-        this.$refs['arrow'].style.left = pop.w / 2 + 'px'
-      } else if (this.pop == 'under-right' || this.pop == 'over-right') {
-        this.$refs['arrow'].style.left = act.w / 2 + 'px'
+      if (actualPositionY === 'under') {
+        popPos.y = yUnder
+      } else {
+        popPos.y = yOver
       }
+
+      if (this.positionX == 'left') {
+        popPos.x =
+          actRect.left +
+          actRect.width +
+          document.documentElement.scrollLeft -
+          popRect.width
+      } else if (this.positionX == 'right') {
+        popPos.x = actRect.left + document.documentElement.scrollLeft
+      } else {
+        popPos.x =
+          actRect.left +
+          actRect.width / 2 +
+          document.documentElement.scrollLeft -
+          popRect.width / 2
+      }
+
+      if (popPos.x < 0) {
+        popPos.x = 0
+      } else if (
+        popPos.x + popRect.width >
+        document.documentElement.clientWidth
+      ) {
+        popPos.x = document.documentElement.clientWidth - popRect.width
+      }
+
+      if (this.breakout) {
+        this.$refs['popout'].style.left = popPos.x + 'px'
+        this.$refs['popout'].style.top = popPos.y + 'px'
+      } else {
+        this.$refs['popout'].style.left =
+          popPos.x - actRect.left - document.documentElement.scrollLeft + 'px'
+        this.$refs['popout'].style.top =
+          popPos.y - actRect.top - document.documentElement.scrollTop + 'px'
+      }
+
+      let arrowLeft =
+        actRect.left +
+        document.documentElement.scrollLeft +
+        actRect.width / 2 -
+        popPos.x -
+        5
+
+      if (arrowLeft < 3) {
+        arrowLeft = 3
+      } else if (arrowLeft > popRect.width - 14) {
+        arrowLeft = popRect.width - 14
+      }
+
+      this.$refs['arrow'].style.left = arrowLeft + 'px'
+
+      if (actualPositionY === 'under') {
+        this.$refs['arrow'].style.top = '-5px'
+        this.$refs['arrow'].style.bottom = 'auto'
+        this.$refs['arrow'].style.transform = 'rotate(45deg)'
+      } else {
+        this.$refs['arrow'].style.bottom = '-5px'
+        this.$refs['arrow'].style.top = 'auto'
+        this.$refs['arrow'].style.transform = 'rotate(225deg)'
+      }
+
       let to = {
-        x: 0,
-        y: 0,
-      }
-      if (['under', 'under-left', 'under-right'].includes(this.pop)) {
-        to.y = -7 - act.h / 2
-      } else {
-        to.y = pop.h + 7 + act.h / 2
-      }
-      if (['under-left', 'over-left'].includes(this.pop)) {
-        to.x = pop.w - act.w / 2
-      } else if (['under-right', 'over-right'].includes(this.pop)) {
-        to.x = act.w / 2
-      } else {
-        to.x = pop.w / 2
+        x:
+          actRect.left +
+          document.documentElement.scrollLeft +
+          actRect.width / 2 -
+          popPos.x,
+        y:
+          actRect.top +
+          document.documentElement.scrollTop +
+          actRect.height / 2 -
+          popPos.y,
       }
 
       this.$refs['popout'].style.transformOrigin = to.x + 'px ' + to.y + 'px'
@@ -189,6 +302,11 @@ export default {
     },
     hide() {
       this.shown = false
+    },
+    hideIfAutohide() {
+      if (!this.noAutoHide) {
+        this.shown = false
+      }
     },
     toggle() {
       if (this.shown) {
@@ -258,6 +376,8 @@ export default {
       document.addEventListener('mousemove', this.mousemove, false)
       document.addEventListener('touchend', this.mouseup, false)
       document.addEventListener('touchmove', this.mousemove, false)
+      window.addEventListener('resize', this.hideIfAutohide, false)
+      window.addEventListener('scroll', this.hideIfAutohide, false)
     },
 
     removeListeners() {
@@ -265,6 +385,8 @@ export default {
       document.removeEventListener('mousemove', this.mousemove, false)
       document.removeEventListener('touchend', this.mouseup, false)
       document.removeEventListener('touchmove', this.mousemove, false)
+      window.removeEventListener('resize', this.hideIfAutohide, false)
+      window.removeEventListener('scroll', this.hideIfAutohide, false)
     },
 
     fillHue() {
@@ -379,9 +501,7 @@ export default {
         !this.$refs['popout'] ||
         !this.$refs['popout'].contains(e.target)
       ) {
-        if (!this.noAutoHide) {
-          this.shown = false
-        }
+        this.hideIfAutohide()
       }
     },
 
@@ -536,7 +656,7 @@ export default {
   height: 8px;
   position: absolute;
 }
-.mccolorpicker__active .mccolorpicker__popout {
+.mccolorpicker__popout.mccolorpicker__active {
   opacity: 1;
   pointer-events: auto;
   transform: scale(1);
@@ -601,73 +721,5 @@ export default {
   transform: translate(0, -3px);
   left: 0;
   width: 100%;
-}
-
-.mccolorpicker__pop-under-right .mccolorpicker__popout {
-  top: 100%;
-  margin-top: 7px;
-  left: 0;
-}
-.mccolorpicker__pop-under-right .mccolorpicker__arrow {
-  top: 0;
-  transform: rotate(45deg) translate(-7px, 0px);
-}
-
-.mccolorpicker__pop-under .mccolorpicker__popout {
-  top: 100%;
-  margin-top: 7px;
-  left: 50%;
-  transform: translateX(-50%) scale(0.001);
-}
-.mccolorpicker__pop-under .mccolorpicker__arrow {
-  top: 0;
-  transform: rotate(45deg) translate(-7px, 0px);
-}
-.mccolorpicker__active.mccolorpicker__pop-under .mccolorpicker__popout {
-  transform: translateX(-50%) scale(1);
-}
-
-.mccolorpicker__pop-under-left .mccolorpicker__popout {
-  top: 100%;
-  margin-top: 7px;
-  right: 0;
-}
-.mccolorpicker__pop-under-left .mccolorpicker__arrow {
-  top: 0;
-  transform: rotate(45deg) translate(-7px, 0px);
-}
-
-.mccolorpicker__pop-over-right .mccolorpicker__popout {
-  bottom: 100%;
-  margin-bottom: 7px;
-  left: 0;
-}
-.mccolorpicker__pop-over-right .mccolorpicker__arrow {
-  bottom: 0;
-  transform: rotate(225deg) translate(0px, -7px);
-}
-
-.mccolorpicker__pop-over .mccolorpicker__popout {
-  bottom: 100%;
-  margin-bottom: 7px;
-  left: 50%;
-  transform: translateX(-50%) scale(0.001);
-}
-.mccolorpicker__pop-over .mccolorpicker__arrow {
-  bottom: 0;
-  transform: rotate(225deg) translate(0px, -7px);
-}
-.mccolorpicker__active.mccolorpicker__pop-over .mccolorpicker__popout {
-  transform: translateX(-50%) scale(1);
-}
-
-.mccolorpicker__pop-over-left .mccolorpicker__popout {
-  bottom: 100%;
-  margin-bottom: 7px;
-  right: 0;
-}
-.mccolorpicker__pop-over-left .mccolorpicker__arrow {
-  bottom: 0;
-  transform: rotate(225deg) translate(0px, -7px);
 }
 </style>

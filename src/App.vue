@@ -24,10 +24,22 @@
 
     <h3>Popout position</h3>
     <p>
-      Set the position using the <code>pop</code>-prop. Possible values are:<br /><code
+      Set the position relative to the preview using the <code>pop</code>-prop.
+      Possible values are:<br /><code
         >over-left | over | over-right | under-left | under | under-right</code
       >
     </p>
+    <p>The default is <code>under-right</code>.</p>
+    <ul>
+      <li>
+        The popup will always show above the preview if there isn't space below
+        (and vice-versa)
+      </li>
+      <li>
+        It will move left / right to stay inside the viewport if the chosen
+        position would put it outside
+      </li>
+    </ul>
     <div class="example">
       <McColorpicker pop="over-left" />
       <McColorpicker pop="over" />
@@ -187,6 +199,10 @@
         </McColorpicker>
       </p>
     </div>
+    <p>
+      Note that using very large or very small preview-elements may give strange
+      results.
+    </p>
     <pre>
 &lt;McColorpicker v-model="colors.hex3" pop="under-left">
   &lt;div
@@ -303,6 +319,43 @@ Pick a color:
   v-model="colors.hex3"
 /></pre
     >
+
+    <hr />
+
+    <p>
+      By default the popup element is absolutely positioned inside the same
+      outer element that contains the preview.
+    </p>
+    <p>
+      This is simple and works well for most situations... but can be a problem
+      when the colorpicker is placed inside a container with overflow hidden /
+      scrolled.
+    </p>
+    <p>
+      Setting the <code>breakout</code>-prop will append the popup directly to
+      the body element instead, working around the issue.
+    </p>
+    <p>
+      However, It is not recommended to use it unless strictly necessary,
+      because:
+    </p>
+    <ul>
+      <li>
+        Vue.js strongly discourages manipulating the DOM directly - which is
+        exactly how the problem is handled
+      </li>
+      <li>
+        positioning is less reliable - the popup might "fly away" from the
+        preview if the window is resized for example
+      </li>
+    </ul>
+    <div class="example overflow">
+      <button @click="breakout = !breakout">
+        {{ breakout ? 'Disable ' : 'Enable' }} breakout
+      </button>
+      <McColorpicker :breakout="breakout" />
+    </div>
+    <pre>&lt;McColorpicker :breakout="{{ breakout }}" /></pre>
   </div>
 </template>
 
@@ -323,6 +376,7 @@ export default {
         obj2: Color('#379bff').fade(0.2),
         hex3: '#ffc300',
       },
+      breakout: false,
     }
   },
   components: {
@@ -346,6 +400,7 @@ export default {
   max-width: 600px;
   text-align: left;
   padding: 1em 0.5em;
+  line-height: 1.6em;
 }
 * {
   vertical-align: middle;
@@ -355,12 +410,19 @@ h3 {
   margin-top: 50px;
   border-bottom: 3px solid #123456;
 }
+
+li {
+  margin: 1em 0;
+}
+
 .example {
   text-align: center;
   position: relative;
 }
-p .mccolorpicker {
-  margin: 0 1em;
+.example.overflow {
+  overflow: scroll;
+  padding: 1em 0;
+  border: 1px solid;
 }
 pre,
 code {
@@ -433,11 +495,11 @@ pre {
     text-align: center;
   }
   .initial-current th:first-child::before {
-    content: "Initial: ";
+    content: 'Initial: ';
     display: block;
   }
   .initial-current td:last-child::before {
-    content: "Current: ";
+    content: 'Current: ';
     display: block;
   }
   .initial-current td:last-child {
