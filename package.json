@@ -1,6 +1,6 @@
 {
   "name": "@mikk3lro/mc-colorpicker",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "A simple colorpicker component for Vue.js. Easy to implement, easy to use.",
   "keywords": [
     "colorpicker",
