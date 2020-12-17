@@ -57,82 +57,86 @@
       <a href="https://www.npmjs.com/package/color">color</a>.
     </p>
     <p>By default the colorpicker will use the same format that is set:</p>
-    <table>
-      <tr>
-        <th>
-          Initial value
-        </th>
-        <td></td>
-        <td>
-          Current value
-        </td>
-      </tr>
-      <tr>
-        <th>
-          <code>#379bff</code>
-        </th>
-        <td>
-          <McColorpicker v-model="colors.hex1" />
-        </td>
-        <td>
-          <code>{{ colors.hex1 }}</code>
-        </td>
-      </tr>
-      <tr>
-        <th>
-          <code>rgba(255, 255, 255)</code>
-        </th>
-        <td>
-          <McColorpicker v-model="colors.rgb1" />
-        </td>
-        <td>
-          <code>{{ colors.rgb1 }}</code>
-        </td>
-      </tr>
-      <tr>
-        <th>
-          <code>Color('#379bff')</code>
-        </th>
-        <td>
-          <McColorpicker v-model="colors.obj1" />
-        </td>
-        <td>
-          <pre>color-object: {{ colors.obj1.object() }}</pre>
-        </td>
-      </tr>
-      <tr>
-        <th>
-          <code>#379bffcc</code>
-        </th>
-        <td>
-          <McColorpicker v-model="colors.hex2" opacity />
-        </td>
-        <td>
-          <code>{{ colors.hex2 }}</code>
-        </td>
-      </tr>
-      <tr>
-        <th>
-          <code>rgba(255, 255, 255, 0.8)</code>
-        </th>
-        <td>
-          <McColorpicker v-model="colors.rgb2" opacity />
-        </td>
-        <td>
-          <code>{{ colors.rgb2 }}</code>
-        </td>
-      </tr>
-      <tr>
-        <th>
-          <code>Color('#379bff').fade(0.2)</code>
-        </th>
-        <td>
-          <McColorpicker v-model="colors.obj2" opacity />
-        </td>
-        <td>
-          <pre>color-object: {{ colors.obj2.object() }}</pre>
-        </td>
-      </tr>
+    <table class="initial-current">
+      <thead>
+        <tr>
+          <th>
+            Initial value
+          </th>
+          <td></td>
+          <td>
+            Current value
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>
+            <code>#379bff</code>
+          </th>
+          <td>
+            <McColorpicker v-model="colors.hex1" />
+          </td>
+          <td>
+            <code>{{ colors.hex1 }}</code>
+          </td>
+        </tr>
+        <tr>
+          <th>
+            <code>rgba(255, 255, 255)</code>
+          </th>
+          <td>
+            <McColorpicker v-model="colors.rgb1" />
+          </td>
+          <td>
+            <code>{{ colors.rgb1 }}</code>
+          </td>
+        </tr>
+        <tr>
+          <th>
+            <code>Color('#379bff')</code>
+          </th>
+          <td>
+            <McColorpicker v-model="colors.obj1" />
+          </td>
+          <td>
+            <pre>color-object: {{ colors.obj1.object() }}</pre>
+          </td>
+        </tr>
+        <tr>
+          <th>
+            <code>#379bffcc</code>
+          </th>
+          <td>
+            <McColorpicker v-model="colors.hex2" opacity />
+          </td>
+          <td>
+            <code>{{ colors.hex2 }}</code>
+          </td>
+        </tr>
+        <tr>
+          <th>
+            <code>rgba(255, 255, 255, 0.8)</code>
+          </th>
+          <td>
+            <McColorpicker v-model="colors.rgb2" opacity />
+          </td>
+          <td>
+            <code>{{ colors.rgb2 }}</code>
+          </td>
+        </tr>
+        <tr>
+          <th>
+            <code>Color('#379bff').fade(0.2)</code>
+          </th>
+          <td>
+            <McColorpicker v-model="colors.obj2" opacity />
+          </td>
+          <td>
+            <pre>color-object: {{ colors.obj2.object() }}</pre>
+          </td>
+        </tr>
+      </tbody>
     </table>
 
     <p>
@@ -345,6 +349,7 @@ export default {
 }
 * {
   vertical-align: middle;
+  box-sizing: border-box;
 }
 h3 {
   margin-top: 50px;
@@ -391,7 +396,7 @@ table code {
 table td pre,
 table td code {
   display: inline-block;
-  max-width: 250px;
+  max-width: 100%;
 }
 .squarePreview {
   width: 100px;
@@ -408,5 +413,35 @@ table td code {
 pre {
   padding: 0.5em;
   overflow-x: auto;
+}
+.initial-current {
+  width: 100%;
+}
+.initial-current pre {
+  width: 100%;
+  margin: 0;
+}
+@media screen and (max-width: 500px) {
+  .initial-current thead {
+    display: none;
+  }
+  .initial-current th,
+  .initial-current td,
+  .initial-current tr {
+    width: auto !important;
+    display: block;
+    text-align: center;
+  }
+  .initial-current th:first-child::before {
+    content: "Initial: ";
+    display: block;
+  }
+  .initial-current td:last-child::before {
+    content: "Current: ";
+    display: block;
+  }
+  .initial-current td:last-child {
+    border-bottom: 1px solid #333;
+  }
 }
 </style>
