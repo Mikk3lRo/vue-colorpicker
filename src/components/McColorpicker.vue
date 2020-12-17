@@ -167,7 +167,6 @@ export default {
     this.init()
     this.parseColor()
     this.addListeners()
-    this.calculatePosition()
     this.breakoutOrComeHome()
   },
   beforeDestroy() {
@@ -185,6 +184,7 @@ export default {
         this.$el.append(this.$refs['popout'])
         this.brokenout = false
       }
+      this.calculatePosition()
     },
     calculatePosition() {
       let popRect = {
