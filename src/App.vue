@@ -339,9 +339,9 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
   margin: 1em auto 160px auto;
-  width: 600px;
+  max-width: 600px;
   text-align: left;
-  padding: 2em;
+  padding: 1em 0.5em;
 }
 * {
   vertical-align: middle;
