@@ -141,6 +141,10 @@ export default {
   mounted() {
     this.init()
     this.parseColor()
+    this.addListeners()
+  },
+  beforeDestroy() {
+    this.removeListeners()
   },
   methods: {
     show() {
@@ -225,6 +229,10 @@ export default {
         opacity: this.$refs['opacity-slider'].getContext('2d'),
       }
 
+      this.fillHue()
+    },
+
+    addListeners() {
       this.$refs['color-block'].addEventListener(
         'mousedown',
         this.mousedownColor,
@@ -243,8 +251,11 @@ export default {
 
       document.addEventListener('mouseup', this.mouseup, false)
       document.addEventListener('mousemove', this.mousemove, false)
+    },
 
-      this.fillHue()
+    removeListeners() {
+      document.removeEventListener('mouseup', this.mouseup, false)
+      document.removeEventListener('mousemove', this.mousemove, false)
     },
 
     fillHue() {
