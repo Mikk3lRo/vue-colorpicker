@@ -2,37 +2,60 @@
   <div id="app">
     <h1>Simple color picker</h1>
     <p>
-      This is a live demo showing how to use
+      This is a live demo showing how to use @mikk3lro/mc-colorpicker for
+      Vue.js.
+    </p>
+    <p>
+      See
       <a href="https://github.com/Mikk3lRo/vue-colorpicker#readme"
-        >@mikk3lro/mc-colorpicker</a
+        >github repo</a
       >
-      colorpicker for Vue.js.
+      or
+      <a href="https://www.npmjs.com/package/@mikk3lro/mc-colorpicker"
+        >npm package</a
+      >
+      for installation instructions.
     </p>
 
-    <h3>Default</h3>
+    <div id="toc">
+      <h3>TOC</h3>
+      <ul>
+        <li><a href="#default">Default behaviour</a></li>
+        <li><a href="#opacity">With opacity</a></li>
+        <li><a href="#position">Popout position</a></li>
+        <li><a href="#value-and-format">Value and format</a></li>
+        <li><a href="#customizing">Customizing preview</a></li>
+        <li><a href="#no-auto-hide">Prevent auto-hide</a></li>
+        <li><a href="#show-hide-toggle">Show / hide / toggle</a></li>
+        <li><a href="#no-preview-click-handler">Disable preview click</a></li>
+        <li><a href="#breakout">Breaking out</a></li>
+      </ul>
+    </div>
+
+    <h3 id="default">Default behaviour</h3>
     <div class="example">
       <McColorpicker />
     </div>
     <pre>&lt;McColorpicker /></pre>
 
-    <h3>Opacity</h3>
+    <h3 id="opacity">With opacity</h3>
     <p>Include opacity by setting the boolean <code>opacity</code>-prop.</p>
     <div class="example">
       <McColorpicker opacity />
     </div>
     <pre>&lt;McColorpicker opacity /></pre>
 
-    <h3>Popout position</h3>
+    <h3 id="position">Popout position</h3>
     <p>
-      Set the position relative to the preview using the <code>pop</code>-prop.
-      Possible values are:<br /><code
+      Set the position relative to the preview using the
+      <code>pop</code>-prop. Possible values are:<br /><code
         >over-left | over | over-right | under-left | under | under-right</code
       >
     </p>
     <p>The default is <code>under-right</code>.</p>
     <ul>
       <li>
-        The popup will always show above the preview if there isn't space below
+        The popout will always show above the preview if there isn't space below
         (and vice-versa)
       </li>
       <li>
@@ -58,7 +81,7 @@
 &lt;McColorpicker pop="under-right" /></pre
     >
 
-    <h3>Value and format</h3>
+    <h3 id="value-and-format">Value and format</h3>
     <p>
       You can set the value using <code>value</code> and the colorpicker will
       emit an <code>input</code> event on changes. This of course means that you
@@ -182,7 +205,7 @@
       </li>
     </ul>
 
-    <h3>Customization</h3>
+    <h3 id="customizing">Customizing the preview</h3>
     <p>
       Though obviously possible, it is not recommended to override the preview
       styling directly.
@@ -262,13 +285,15 @@ Pick a color:
   <span>{</span>{ colors.hex3 }}
 &lt;/McColorpicker></pre
     >
-    <hr />
+
+    <h3 id="no-auto-hide">Prevent auto-hide</h3>
     <p>
       By default the colorpicker will listen for clicks outside and
       automatically hide the popout.
     </p>
     <p>
-      It will also auto-hide the popout on window scroll or resize.
+      When in <a href="#breakout">breakout-mode</a> it will also auto-hide on
+      window scroll or resize.
     </p>
     <p>
       You can disable this behaviour with the boolean prop
@@ -278,35 +303,40 @@ Pick a color:
       <McColorpicker no-auto-hide v-model="colors.hex3" />
     </div>
     <pre>&lt;McColorpicker no-auto-hide v-model="colors.hex3" /></pre>
-    <hr />
 
-    <p>You can show or hide the popup programmatically:</p>
+    <h3 id="show-hide-toggle">Show / hide / toggle popout</h3>
+    <p>You can show or hide the popout programmatically:</p>
     <div class="example">
       <button @click="$refs['programmatic'].show()">Show popout</button>
       <button @click="$refs['programmatic'].hide()">Hide popout</button>
-      <button @click="$refs['programmatic'].toggle()">Toggle popout</button>
+      <button @click="$refs['programmatic'].toggle()">
+        Toggle popout
+      </button>
 
-      <McColorpicker ref="programmatic" no-auto-hide v-model="colors.hex3" />
+      <McColorpicker no-auto-hide ref="programmatic" v-model="colors.hex3" />
     </div>
     <p>
-      Since by default a click outside the component would hide the popout you
-      need to add <code>no-auto-hide</code> to get the expected behaviour from
-      <code>toggle()</code>
+      <small
+        ><strong>Note:</strong> Since by default a click outside the component
+        would hide the popout you need to add <code>no-auto-hide</code> to get
+        the expected behaviour - or stop the propagation of the click events.
+      </small>
     </p>
     <pre>
 &lt;button @click="$refs['programmatic'].show()">Show popout&lt;/button>
 &lt;button @click="$refs['programmatic'].hide()">Hide popout&lt;/button>
 &lt;button @click="$refs['programmatic'].toggle()">Toggle popout&lt;/button>
-&lt;McColorpicker ref="programmatic" no-auto-hide v-model="colors.hex3" /></pre
-    >
-    <hr />
 
+&lt;McColorpicker no-auto-hide ref="programmatic" v-model="colors.hex3" /></pre
+    >
+
+    <h3 id="no-preview-click-handler">Disable popout on preview click</h3>
     <p>
-      Disable popout show / hide on preview click with
+      Disable popout toggling on preview click with
       <code>no-preview-click-handler</code>:
     </p>
     <div class="example">
-      <button @click="$refs['noShow'].show()">Show popout</button>
+      <button @click.stop="$refs['noShow'].show()">Show popout</button>
 
       <McColorpicker
         ref="noShow"
@@ -315,7 +345,8 @@ Pick a color:
       />
     </div>
     <pre>
-&lt;button @click="$refs['noShow'].show()">Show popout&lt;/button>
+&lt;button @click.stop="$refs['noShow'].show()">Show popout&lt;/button>
+
 &lt;McColorpicker
   ref="noShow"
   no-preview-click-handler
@@ -323,24 +354,22 @@ Pick a color:
 /></pre
     >
 
-    <hr />
-
+    <h3 id="breakout">Breaking out of <code>overflow: hidden</code></h3>
     <p>
-      By default the popup element is absolutely positioned inside the same
+      By default the popout element is absolutely positioned inside the same
       outer element that contains the preview.
     </p>
     <p>
       This is simple and works well for most situations... but can be a problem
-      when the colorpicker is placed inside a container with overflow hidden /
-      scrolled.
+      when the colorpicker is placed inside a container with overflow hidden or
+      scrolling enabled.
     </p>
     <p>
-      Setting the <code>breakout</code>-prop will append the popup directly to
+      Setting the <code>breakout</code>-prop will append the popout directly to
       the body element instead, working around the issue.
     </p>
     <p>
-      However, It is not recommended to use it unless strictly necessary,
-      because:
+      However, it is not recommended unless strictly necessary - because:
     </p>
     <ul>
       <li>
@@ -348,8 +377,8 @@ Pick a color:
         exactly how the problem is handled
       </li>
       <li>
-        positioning is less reliable - the popup might "fly away" from the
-        preview if the window is resized for example
+        positioning is less reliable - the popout could "fly away" from the
+        preview in certain situations
       </li>
     </ul>
     <div class="example overflow">
@@ -406,9 +435,60 @@ export default {
   line-height: 1.6em;
 }
 * {
-  vertical-align: middle;
+  vertical-align: baseline;
   box-sizing: border-box;
 }
+a {
+  color: #379bff;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+#toc {
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.3);
+  position: fixed;
+  width: 220px;
+  top: 40px;
+  left: calc(50% - 550px);
+  padding: 1em 0;
+}
+#toc li {
+  padding: 0.2em 0.5em;
+  margin: 0;
+  text-align: center;
+}
+#toc h3 {
+  border-bottom: 1px solid #888;
+  margin: 0 0 0.5em 0;
+  text-align: center;
+}
+#toc ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media screen and (max-width: 1100px) {
+  #app {
+    margin-left: 230px;
+    max-width: none;
+  }
+  #toc {
+    left: 0;
+    top: 0;
+    bottom: 0;
+    transform: none;
+  }
+}
+@media screen and (max-width: 600px) {
+  #app {
+    margin-left: auto;
+  }
+  #toc {
+    display: none;
+  }
+}
+
 h3 {
   margin-top: 50px;
   border-bottom: 3px solid #123456;
@@ -439,6 +519,7 @@ table {
 }
 table th,
 table td {
+  vertical-align: top;
   padding: 0.5em;
   width: 45%;
 }
@@ -458,8 +539,9 @@ table code {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-table td pre,
-table td code {
+table pre,
+table code {
+  margin-top: 3px;
   display: inline-block;
   max-width: 100%;
 }
