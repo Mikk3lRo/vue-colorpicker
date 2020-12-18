@@ -18,8 +18,8 @@ npm i @mikk3lro/mc-colorpicker
 Then, import and register the component and stylesheet:
 
 ```js
-import McColorpicker from '@mikk3lro/mc-colorpicker'
-import '@mikk3lro/mc-colorpicker/dist/mc-colorpicker.css'
+import McColorpicker from '@mikk3lro/mc-colorpicker';
+import '@mikk3lro/mc-colorpicker/dist/mc-colorpicker.css';
 
 Vue.component("McColorpicker", McColorpicker);
 ```
