@@ -650,6 +650,7 @@ export default {
   border-radius: 100%;
   overflow: hidden;
   position: relative;
+  cursor: pointer;
 }
 .mccolorpicker__popout {
   z-index: 9;
