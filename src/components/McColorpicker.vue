@@ -308,6 +308,11 @@ export default {
         this.shown = false
       }
     },
+    autohideIfBreakout() {
+      if (this.breakout) {
+        this.hideIfAutohide()
+      }
+    },
     toggle() {
       if (this.shown) {
         this.hide()
@@ -376,8 +381,9 @@ export default {
       document.addEventListener('mousemove', this.mousemove, false)
       document.addEventListener('touchend', this.mouseup, false)
       document.addEventListener('touchmove', this.mousemove, false)
-      window.addEventListener('resize', this.hideIfAutohide, false)
-      window.addEventListener('scroll', this.hideIfAutohide, false)
+      window.addEventListener('click', this.clickoutside, false)
+      window.addEventListener('resize', this.autohideIfBreakout, false)
+      window.addEventListener('scroll', this.autohideIfBreakout, false)
     },
 
     removeListeners() {
@@ -385,8 +391,9 @@ export default {
       document.removeEventListener('mousemove', this.mousemove, false)
       document.removeEventListener('touchend', this.mouseup, false)
       document.removeEventListener('touchmove', this.mousemove, false)
-      window.removeEventListener('resize', this.hideIfAutohide, false)
-      window.removeEventListener('scroll', this.hideIfAutohide, false)
+      window.removeEventListener('click', this.clickoutside, false)
+      window.removeEventListener('resize', this.autohideIfBreakout, false)
+      window.removeEventListener('scroll', this.autohideIfBreakout, false)
     },
 
     fillHue() {
@@ -497,7 +504,10 @@ export default {
     mouseup(e) {
       if (this.drag.which) {
         this.drag.which = false
-      } else if (
+      }
+    },
+    clickoutside(e) {
+      if (
         this.$refs['activator'] &&
         this.$refs['activator'].contains(e.target)
       ) {
@@ -506,7 +516,9 @@ export default {
         !this.$refs['popout'] ||
         !this.$refs['popout'].contains(e.target)
       ) {
-        this.hideIfAutohide()
+        if (this.shown) {
+          this.hideIfAutohide()
+        }
       }
     },
 
