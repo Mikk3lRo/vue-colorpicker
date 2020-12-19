@@ -381,7 +381,6 @@ export default {
       document.addEventListener('mousemove', this.mousemove, false)
       document.addEventListener('touchend', this.mouseup, false)
       document.addEventListener('touchmove', this.mousemove, false)
-      window.addEventListener('click', this.clickoutside, false)
       window.addEventListener('resize', this.autohideIfBreakout, false)
       window.addEventListener('scroll', this.autohideIfBreakout, false)
     },
@@ -391,7 +390,6 @@ export default {
       document.removeEventListener('mousemove', this.mousemove, false)
       document.removeEventListener('touchend', this.mouseup, false)
       document.removeEventListener('touchmove', this.mousemove, false)
-      window.removeEventListener('click', this.clickoutside, false)
       window.removeEventListener('resize', this.autohideIfBreakout, false)
       window.removeEventListener('scroll', this.autohideIfBreakout, false)
     },
@@ -508,10 +506,7 @@ export default {
     mouseup(e) {
       if (this.drag.which) {
         this.drag.which = false
-      }
-    },
-    clickoutside(e) {
-      if (
+      } else if (
         this.$refs['activator'] &&
         this.$refs['activator'].contains(e.target)
       ) {
@@ -520,9 +515,7 @@ export default {
         !this.$refs['popout'] ||
         !this.$refs['popout'].contains(e.target)
       ) {
-        if (this.shown) {
-          this.hideIfAutohide()
-        }
+        this.hideIfAutohide()
       }
     },
 
