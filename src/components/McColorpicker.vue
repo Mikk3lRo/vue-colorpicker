@@ -355,7 +355,7 @@ export default {
         opacity: this.$refs['opacity-slider'].getContext('2d'),
       }
 
-      this.fillHue()
+      this.fillHueSlider()
     },
 
     addListeners() {
@@ -396,7 +396,7 @@ export default {
       window.removeEventListener('scroll', this.autohideIfBreakout, false)
     },
 
-    fillHue() {
+    fillHueSlider() {
       this.ctxs.hue.rect(0, 0, this.dimensions.hue.x, this.dimensions.hue.y)
       var gradient = this.ctxs.hue.createLinearGradient(
         0,
@@ -415,7 +415,7 @@ export default {
       this.ctxs.hue.fill()
     },
 
-    fillGradient() {
+    fillColorBlock() {
       let rgb = this.colorObj
         .lightness(255)
         .saturationv(255)
@@ -459,7 +459,10 @@ export default {
         this.dimensions.color.x,
         this.dimensions.color.y,
       )
+    },
 
+    fillOpacitySlider() {
+      let rgb = this.colorObj.alpha(1).rgb()
       this.ctxs.opacity.clearRect(
         0,
         0,
@@ -472,6 +475,7 @@ export default {
         this.dimensions.opacity.x,
         this.dimensions.opacity.y,
       )
+
       var grd1 = this.ctxs.opacity.createLinearGradient(
         0,
         0,
@@ -573,7 +577,7 @@ export default {
       this.colorObj = this.colorObj.hue(
         (rel.y * 360) / (this.dimensions.hue.y - 1),
       )
-      this.fillGradient()
+      this.fillColorBlock()
       this.changeColor(this.positions.color)
     },
     changeColor(rel) {
@@ -584,6 +588,7 @@ export default {
       this.colorObj = this.colorObj.value(v * 100)
       this.colorObj = this.colorObj.saturationv(s * 100)
 
+      this.fillOpacitySlider()
       this.changeOpacity(this.positions.opacity)
     },
     changeOpacity(rel) {
