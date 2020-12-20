@@ -90,7 +90,7 @@ export default {
 
       shown: false,
 
-      preventEmit: false,
+      preventEmit: true,
 
       colorObj: Color(this.color),
 
@@ -168,6 +168,7 @@ export default {
     this.parseColor()
     this.addListeners()
     this.breakoutOrComeHome()
+    this.preventEmit = false
   },
   beforeDestroy() {
     this.removeListeners()
